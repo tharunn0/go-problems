@@ -29,8 +29,8 @@ func main() {
 	// creating worker
 	for i := range 2 {
 		fmt.Println(i)
-		go worker(i, task, res, &wg)
 		wg.Add(1)
+		go worker(i, task, res, &wg)
 	}
 
 	//function to receive values
