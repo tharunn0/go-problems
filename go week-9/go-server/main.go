@@ -1,9 +1,12 @@
 package main
 
 import (
+	"crypto/tls"
 	"fmt"
 	"log"
 	"net/http"
+
+	"golang.org/x/net/http2"
 )
 
 func main() {
@@ -22,23 +25,23 @@ func main() {
 	key := "key.pem"
 
 	// configure tls
-	// tlsConfig := &tls.Config{
-	// 	MinVersion: tls.VersionTLS12,
-	// }
+	tlsConfig := &tls.Config{
+		MinVersion: tls.VersionTLS12,
+	}
 
 	// create and serve custom server
-	port := 8080
-	// server := &http.Server{
-	// 	Addr:      fmt.Sprintf(":%d", port),
-	// 	TLSConfig: tlsConfig,
-	// 	Handler:   mux,
-	// }
+	port := 9090
+	server := &http.Server{
+		Addr:      fmt.Sprintf(":%d", port),
+		TLSConfig: tlsConfig,
+		Handler:   mux,
+	}
 
-	// http2.ConfigureServer(server, &http2.Server{})
+	http2.ConfigureServer(server, &http2.Server{})
 
-	err := http.ListenAndServeTLS(fmt.Sprintf(":%d", port), cert, key, mux)
+	// err := http.ListenAndServeTLS(fmt.Sprintf(":%d", port), cert, key, mux)
 
-	// err := server.ListenAndServeTLS(cert, key)
+	err := server.ListenAndServeTLS(cert, key)
 	if err != nil {
 		log.Fatalln("Error starting server :", err)
 	}
